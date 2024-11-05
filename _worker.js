@@ -1,4 +1,4 @@
-const DOH_ADDRESS = '1.1.1.1'
+const DOH_ADDRESS = '1.0.0.1'
 
 export default {
   async fetch(request, environment, context) {
@@ -9,13 +9,11 @@ export default {
   if (pathname !== "/dns-query") {
     return Response.redirect("https://baidu.com/", 301)
   }
+  
+  const contentType=request.headers.get('content-type')
 
-  //if (request.method !== "GET" && request.method !== "POST") {
-  //  return new Response(`Method ${request.method} not allowed.`, { status: 405 })
-  //}
-
-  if(request.headers.get('content-type') !== 'application/dns-message') {
-        return Response.redirect("https://www.bing.com/", 301)
+  if(contentType.toLowerCase() !== 'application/dns-message') {
+    return new Response(` Error: Invalid header.\n`, { status: 300 })
   }
   const newURL = `https://${DOH_ADDRESS}${pathname}${search}`
   const newRequest = new Request(newURL, {
